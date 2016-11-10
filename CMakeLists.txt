@@ -12,17 +12,25 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__DARWIN_UNIX03 -fPIC -w")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -nostdlib -Wl,--version-script=${DARLING_TOP_DIRECTORY}/darwin.map")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}")
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/cc/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ccn/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ccdigest/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ccmd2/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ccmd4/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ccmd5/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ccsha1/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/ccsha2/include)
+
 include_directories(${DARLING_TOP_DIRECTORY}/platform-include)
 
 add_definitions(-D_FILE_OFFSET_BITS=64)
 
 set(cc_sources
-	src/cc.c
-	src/ccdigest.c
-	src/ccmd2.c
-	src/ccmd4.c
-	src/ccmd5.c
+	cc/src/cc.c
+	ccdigest/src/ccdigest.c
+	ccmd2/src/ccmd2.c
+	ccmd4/src/ccmd4.c
+	ccmd5/src/ccmd5.c
 )
 
 SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/darling")

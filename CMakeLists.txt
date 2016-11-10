@@ -26,7 +26,12 @@ include_directories(${DARLING_TOP_DIRECTORY}/platform-include)
 add_definitions(-D_FILE_OFFSET_BITS=64)
 
 set(cc_sources
-	cc/src/cc.c
+	cc/src/cc_zero.c
+	cc/src/cc_clear.c
+	cc/src/cc_copy.c
+	cc/src/cc_xor.c
+	cc/src/cc_cmp_safe.c
+	cc/src/cc_muxp.c
 	ccdigest/src/ccdigest.c
 	ccmd2/src/ccmd2.c
 	ccmd4/src/ccmd4.c

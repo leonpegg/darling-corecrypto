@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2016 Lubos Dolezel
  *
  * This file is part of Darling CoreCrypto.
@@ -21,14 +21,14 @@
 #define _CORECRYPTO_CC_H
 
 #include <corecrypto/cc_config.h>
-#include <assert.h>
-#include <string.h>
 #include <stdint.h>
+#include <string.h>
+#include <assert.h>
 
-#define cc_aligned_struct(alignment)  \
-    typedef struct\
-	{ \
-		uint8_t dummy[alignment]; \
+#define cc_aligned_struct(alignment) \
+    typedef struct \
+    { \
+        uint8_t dummy[alignment]; \
     } __attribute__((aligned(alignment)))
 
 #define cc_ctx_n(type, size) ((sizeof(type) + size - 1) / sizeof(type))
@@ -37,54 +37,75 @@
 
 #define cc_ctx_decl(type, size, name) type name[cc_ctx_n(type, size)]
 
-inline void cc_zero(size_t size ,void* data)
-{
-	memset(data, 0, size);
-}
+/**
+ * @fn void cc_zero(size_t size, void *data)
+ * @param size
+ * @param data 
+ */
+void cc_zero(size_t size, void *data);
 
-void cc_clear(size_t len, void* dst);
+/**
+ * @fn void cc_clear(size_t len, void *dst)
+ * @param len
+ * @param dst 
+ */
+void cc_clear(size_t len, void *dst);
 
-inline void* cc_copy(size_t size, void* dst, const void* src)
-{
-	return memcpy(dst, src, size);
-}
+/**
+ * @fn void *cc_copy(size_t size, void *dst, const void *src)
+ * @param size
+ * @param dst
+ * @param src
+ */
+void *cc_copy(size_t size, void *dst, const void *src);
 
-inline void cc_xor(size_t size, void* result, const void* left, const void* right)
-{
-	size_t i;
-	uint8_t* res8 = (uint8_t*) result;
-	const uint8_t* l8 = (const uint8_t*) left;
-	const uint8_t* r8 = (const uint8_t*) right;
+/**
+ * @fn void cc_xor(size_t size, void *result, const void *left, const void *right)
+ * @param size
+ * @param result
+ * @param left
+ * @param right
+ */
+void cc_xor(size_t size, void *result, const void *left, const void *right);
 
-	for (i = 0; i < size; i++)
-		res8[i] = l8[i] ^ r8[i];
-}
+/**
+ * @fn int cc_cmp_safe(size_t num, const void *ptr1, const void *ptr2)
+ * @brief Constant-time comparison function
+ * @param num
+ * @param ptr1
+ * @param ptr2
+ * @see https://cryptocoding.net/index.php/Coding_rules#Compare_secret_strings_in_constant_time
+ */
+int cc_cmp_safe(size_t num, const void *ptr1, const void *ptr2);
 
-// memcmp in const time
-int cc_cmp_safe(size_t num, const void* ptr1, const void* ptr2);
+/**
+ * @fn void *cc_muxp(int s, const void *a, const void *b)
+ * @param s
+ * @param a
+ * @param b
+ * @see https://cryptocoding.net/index.php/Coding_rules#Avoid_branchings_controlled_by_secret_data 
+ */
+void *cc_muxp(int s, const void *a, const void *b);
 
-// return (s) ? a : b // in const time
-void* cc_muxp(int s, const void *a, const void *b);
-
-#define CC_SWAP(a,b) {\
-    __typeof__(a) tmp = a;\
-	a = b;\
-	b = tmp;\
-}
+#define CC_SWAP(a, b) \
+    { \
+        __typeof__(a) tmp = a; \
+        a = b; \
+        b = tmp; \
+    }
 
 // Like the max macro, but params are evaluated only once
-#define CC_MAX(a, b) ({\
-		__typeof__(a) ax = a;\
-		__typeof__(b) bx = b;\
-		ax > bx ? ax : bx;\
+#define CC_MAX(a, b) ({ \
+    __typeof__(a) ax = a; \
+    __typeof__(b) bx = b; \
+    ax > bx ? ax : bx; \
 })
 
 // Like the min macro, but params are evaluated only once
-#define CC_MIN(a, b) ({\
-		__typeof__(a) ax = a;\
-		__typeof__(b) bx = b;\
-		ax < bx ? ax : bx;\
+#define CC_MIN(a, b) ({ \
+    __typeof__(a) ax = a; \
+    __typeof__(b) bx = b; \
+    ax < bx ? ax : bx; \
 })
 
-#endif
-
+#endif // _CORECRYPTO_CC_H

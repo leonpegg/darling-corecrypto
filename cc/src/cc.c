@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2016 Lubos Dolezel
  *
  * This file is part of Darling CoreCrypto.
@@ -18,36 +18,52 @@
  */
 
 #include <corecrypto/cc.h>
-#include <string.h>
-#include <stdint.h>
+
+void cc_zero(size_t size, void *data)
+{
+    memset(data, 0, size);
+}
 
 void cc_clear(size_t len, void *dst)
 {
-	memset(len, 0, dst);
+    cc_zero(len, dst);
 }
 
-/* https://cryptocoding.net/index.php/Coding_rules#Avoid_branchings_controlled_by_secret_data */
-void* cc_muxp(int s, const void *a, const void *b)
+void *cc_copy(size_t size, void *dst, const void *src)
 {
-	uintptr_t mask = -(s != 0);
-	uintptr_t ret = mask & (((uintptr_t)a) ^ ((uintptr_t)b));
-	ret = ret ^ ((uintptr_t)a);
-	return (void*) ret;
+    return memcpy(dst, src, size);
 }
 
-/* https://cryptocoding.net/index.php/Coding_rules#Compare_secret_strings_in_constant_time */
-int cc_cmp_safe(size_t size, const void* a, const void* b)
+void cc_xor(size_t size, void *result, const void *left, const void *right)
 {
-	const unsigned char *_a = (const unsigned char *) a;
-	const unsigned char *_b = (const unsigned char *) b;
-	unsigned char result = 0;
-	size_t i;
+    size_t i;
+    uint8_t *res8 = (uint8_t *)result;
+    const uint8_t *l8 = (const uint8_t *)left;
+    const uint8_t *r8 = (const uint8_t *)right;
 
-	for (i = 0; i < size; i++)
-	{
-		result |= _a[i] ^ _b[i];
-	}
-
-	return result;
+    for (i = 0; i < size; i++)
+    res8[i] = l8[i] ^ r8[i];
 }
 
+int cc_cmp_safe(size_t size, const void *a, const void *b)
+{
+    const unsigned char *_a = (const unsigned char *)a;
+    const unsigned char *_b = (const unsigned char *)b;
+    unsigned char result = 0;
+    size_t i;
+
+    for (i = 0; i < size; i++)
+    {
+	    result |= _a[i] ^ _b[i];
+    }
+
+    return result;
+}
+
+void *cc_muxp(int s, const void *a, const void *b)
+{
+    uintptr_t mask = -(s != 0);
+    uintptr_t ret = mask & (((uintptr_t)a) ^ ((uintptr_t)b));
+    ret = ret ^ ((uintptr_t)a);
+    return (void *)ret;
+}
